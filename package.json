@@ -1,0 +1,11 @@
+{
+  "name": "vidjot",
+  "version": "1.0.0",
+  "description": "my first application tuto",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Garali Med Karim",
+  "license": "ISC"
+}
