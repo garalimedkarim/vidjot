@@ -9,7 +9,7 @@ const session = require('express-session');
 
 const app=express();
 
-
+//--------------------------------------------------
 
 //Map global promise = get rid of warning
 mongoose.Promise = global.Promise;
@@ -33,7 +33,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
-
 //methodOverride middleware:
 app.use(methodOverride('_method'));
 
@@ -47,6 +46,8 @@ app.use(session({
 
 //Connect flash middleware:
 app.use(flash());
+
+//--------------------------------------------------
 
 // Setting Global variables:
 app.use(function(req,res,next){
@@ -68,6 +69,8 @@ app.use(function(req,res,next){
 	next();
 });
 
+//--------------------------------------------------
+
 // Index Route:
 app.get("/",(req,res) => {
  	res.render('index');
@@ -79,109 +82,14 @@ app.get("/about",(req,res)=>{
 	res.render("about",{title:"about1"});
 });
 
-// add Idea form:
-app.get("/ideas/add",(req,res)=>{
-	res.render("ideas/add");
-});
+// load routes :
+const ideas = require("./routes/ideas");
+const users = require("./routes/users");
+// Use routes :
+app.use("/ideas",ideas);
+app.use("/users",users);
 
-// edit Idea form:
-app.get("/ideas/edit/:id",(req,res)=>{
-	// Load Idea Model:
-	require('./models/Idea');
-	const Idea = mongoose.model('ideas');	
-	
-	Idea.findOne({
-		_id: req.params.id
-	})
-	.then(idea=> {
-		res.render("ideas/edit",{
-			idea: idea,
-		});	
-	});
-});
-
-// edit idea:
-app.put("/ideas/:id",(req,res)=>{
-	// Load Idea Model:
-	require('./models/Idea');
-	const Idea = mongoose.model('ideas');	
-
-	Idea.findOne({
-		"_id":req.params.id,
-	})
-	.then(idea=>{
-		// editing idea object
-		idea.title = req.body.title;
-		idea.details = req.body.details;
-		// persisting object:
-		idea.save()
-		.then(idea=>{
-			req.flash('success_msg',"Video Updated");
-			res.redirect("/ideas");
-		});
-		
-	});
-});
-
-// delete idea:
-app.delete("/ideas/:id",(req,res)=>{
-	// Load Idea Model:
-	require('./models/Idea');
-	const Idea = mongoose.model('ideas');
-
-	Idea.remove({_id: req.params.id})
-	.then(()=>{
-		req.flash("success_msg","Video Idea Removed");
-		res.redirect("/ideas");
-	})
-});
-
-// Ideas index page:
-app.get("/ideas",(req,res)=>{
-	// Load Idea Model:
-	require('./models/Idea');
-	const Idea = mongoose.model('ideas');			
-	
-	Idea.find({})
-	.sort({date:'desc'})
-	.then(ideas=>{
-		res.render("ideas/index",{
-			ideas: ideas,
-		});
-	})
-	
-});
-
-// form handle :
-app.post("/ideas",function(req,res){
-	let errors = [];
-	if (!req.body.title)
-		errors.push({text:'Please add a title'});
-	if (!req.body.details)
-		errors.push({text:'Please add a details'});
-	if (errors.length > 0)
-		res.render("ideas/add",{
-			errors: errors,
-			title: req.body.title,
-			details: req.body.details,
-		});
-	else{
-		// Load Idea Model:
-		require('./models/Idea');
-		const Idea = mongoose.model('ideas');		
-		const newIdea= {
-			title: req.body.title,
-			details: req.body.details,
-		};
-		new Idea(newIdea)
-		.save()
-		.then(idea=>{
-			req.flash("success_msg","Video added successfully");
-			res.redirect("/ideas");
-		});
-	}
-});
-
+//--------------------------------------------------
 
 const port=5000;
 
