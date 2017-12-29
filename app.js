@@ -78,6 +78,7 @@ app.get("/ideas/edit/:id",(req,res)=>{
 	});
 });
 
+// edit idea:
 app.put("/ideas/:id",(req,res)=>{
 	// Load Idea Model:
 	require('./models/Idea');
@@ -97,6 +98,18 @@ app.put("/ideas/:id",(req,res)=>{
 		});
 		
 	});
+});
+
+// delete idea:
+app.delete("/ideas/:id",(req,res)=>{
+	// Load Idea Model:
+	require('./models/Idea');
+	const Idea = mongoose.model('ideas');
+
+	Idea.remove({_id: req.params.id})
+	.then(()=>{
+		res.redirect("/ideas");
+	})
 });
 
 // Ideas index page:
