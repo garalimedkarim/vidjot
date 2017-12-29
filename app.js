@@ -1,4 +1,6 @@
 const express = require('express');
+
+const methodOverride = require('method-override');
 const mongoose = require('mongoose');
 const exphbs  = require('express-handlebars');
 const bodyParser = require('body-parser');
@@ -28,6 +30,9 @@ app.set('view engine', 'handlebars');
 app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
+
+//override with POST having ?_method=DELETE
+app.use(methodOverride('_method'));
 
 /* app.use(function(req,res,next){
 	console.log("3ale rou7i");
@@ -70,8 +75,28 @@ app.get("/ideas/edit/:id",(req,res)=>{
 		res.render("ideas/edit",{
 			idea: idea,
 		});	
+	});
+});
+
+app.put("/ideas/:id",(req,res)=>{
+	// Load Idea Model:
+	require('./models/Idea');
+	const Idea = mongoose.model('ideas');	
+
+	Idea.findOne({
+		"_id":req.params.id,
 	})
-	
+	.then(idea=>{
+		// editing idea object
+		idea.title = req.body.title;
+		idea.details = req.body.details;
+		// persisting object:
+		idea.save()
+		.then(idea=>{
+			res.redirect("/ideas");
+		});
+		
+	});
 });
 
 // Ideas index page:
