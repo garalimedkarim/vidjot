@@ -19,10 +19,6 @@ mongoose.connect('mongodb://localhost/vidjot-db',{
 })
 .catch(err => console.log(err));
 
-// Load Idea Model:
-require('./models/Idea');
-const Idea = mongoose.model('ideas');
-
 // handlebars middleware :
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
@@ -74,8 +70,20 @@ app.post("/ideas",function(req,res){
 			title: req.body.title,
 			details: req.body.details,
 		});
-	else
-		res.send("OK"+req.body.title);
+	else{
+		// Load Idea Model:
+		require('./models/Idea');
+		const Idea = mongoose.model('ideas');		
+		const newIdea= {
+			title: req.body.title,
+			details: req.body.details,
+		};
+		new Idea(newIdea)
+		.save()
+		.then(idea=>{
+			res.redirect("/ideas");
+		});
+	}
 
 });
 
