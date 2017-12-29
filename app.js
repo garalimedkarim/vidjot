@@ -56,9 +56,25 @@ app.get("/about",(req,res)=>{
 app.get("/ideas/add",(req,res)=>{
 	res.render("ideas/add");
 });
+
+// Ideas index page:
+app.get("/ideas",(req,res)=>{
+	// Load Idea Model:
+	require('./models/Idea');
+	const Idea = mongoose.model('ideas');			
+	
+	Idea.find({})
+	.sort({date:'desc'})
+	.then(ideas=>{
+		res.render("ideas/index",{
+			ideas: ideas,
+		});
+	})
+	
+});
+
 // form handle :
 app.post("/ideas",function(req,res){
-
 	let errors = [];
 	if (!req.body.title)
 		errors.push({text:'Please add a title'});
@@ -84,7 +100,6 @@ app.post("/ideas",function(req,res){
 			res.redirect("/ideas");
 		});
 	}
-
 });
 
 
