@@ -6,14 +6,14 @@ const exphbs  = require('express-handlebars');
 const bodyParser = require('body-parser');
 const flash = require('connect-flash'); 
 const session = require('express-session');
+//const path = require("path");
 
 const app=express();
 
-//--------------------------------------------------
+//---------------Mongoose Connect-----------------------
 
 //Map global promise = get rid of warning
 mongoose.Promise = global.Promise;
-
 //Connect to mongoose
 mongoose.connect('mongodb://localhost/vidjot-db',{
 	useMongoClient: true
@@ -22,6 +22,12 @@ mongoose.connect('mongodb://localhost/vidjot-db',{
 	console.log("MongoDB connected ...");
 })
 .catch(err => console.log(err));
+
+//----------------Middlewares set in Use-----------------
+
+// Static folder Set:
+//app.use(express.static(path.join(__dirname,'public')));
+app.use(express.static('public'));
 
 // handlebars middleware :
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
@@ -47,7 +53,7 @@ app.use(session({
 //Connect flash middleware:
 app.use(flash());
 
-//--------------------------------------------------
+//----------------My Own Middlewares-----------------
 
 // Setting Global variables:
 app.use(function(req,res,next){
@@ -69,7 +75,7 @@ app.use(function(req,res,next){
 	next();
 });
 
-//--------------------------------------------------
+//-----------------Routes-----------------------------
 
 // Index Route:
 app.get("/",(req,res) => {

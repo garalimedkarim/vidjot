@@ -7,11 +7,11 @@ const router = express.Router();
 //--------------------------------------------------
 
 router.get("/login",(req,res)=>{
-	res.send("Login");
+	res.render("users/login");
 });
 
 router.get("/register",(req,res)=>{
-	res.send("regiser");
+	res.render("users/register");
 });
 
 //--------------------------------------------------
