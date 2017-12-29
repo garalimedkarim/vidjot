@@ -52,9 +52,26 @@ app.get("/about",(req,res)=>{
 	res.render("about",{title:"about1"});
 });
 
-// add Idea Route:
+// add Idea form:
 app.get("/ideas/add",(req,res)=>{
 	res.render("ideas/add");
+});
+
+// edit Idea form:
+app.get("/ideas/edit/:id",(req,res)=>{
+	// Load Idea Model:
+	require('./models/Idea');
+	const Idea = mongoose.model('ideas');	
+	
+	Idea.findOne({
+		_id: req.params.id
+	})
+	.then(idea=> {
+		res.render("ideas/edit",{
+			idea: idea,
+		});	
+	})
+	
 });
 
 // Ideas index page:
