@@ -8,7 +8,11 @@ const flash = require('connect-flash');
 const session = require('express-session');
 //const path = require("path");
 
+const passport = require('passport');
+
+
 const app=express();
+
 
 //---------------Mongoose Connect-----------------------
 
@@ -29,6 +33,18 @@ mongoose.connect('mongodb://localhost/vidjot-db',{
 //app.use(express.static(path.join(__dirname,'public')));
 app.use(express.static('public'));
 
+// Session middleware :
+app.use(session({
+  secret: 'mySecret',
+  resave: true,
+  saveUninitialized: true,
+  //cookie: { secure: true }
+}));
+
+// passport middleware :
+app.use(passport.initialize());
+app.use(passport.session());
+
 // handlebars middleware :
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
@@ -42,14 +58,6 @@ app.use(bodyParser.json());
 //methodOverride middleware:
 app.use(methodOverride('_method'));
 
-//Express session middleware :
-app.use(session({
-  secret: 'mySecret',
-  resave: true,
-  saveUninitialized: true,
-  //cookie: { secure: true }
-}));
-
 //Connect flash middleware:
 app.use(flash());
 
@@ -60,6 +68,7 @@ app.use(function(req,res,next){
 	res.locals.success_msg = req.flash("success_msg");
 	res.locals.error_msg = req.flash("error_msg");
 	res.locals.error = req.flash("error");
+	res.locals.user = req.user || null;
 	next();
 });
 
@@ -94,6 +103,11 @@ const users = require("./routes/users");
 // Use routes :
 app.use("/ideas",ideas);
 app.use("/users",users);
+
+//--------------------------------------------------
+
+//call local-strategy:
+require("./config/passport")(passport);
 
 //--------------------------------------------------
 
