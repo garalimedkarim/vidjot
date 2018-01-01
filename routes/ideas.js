@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 
 const router = express.Router();
 
+const {ensureAuthenticated} = require("../helpers/auth");
+
 // Load Idea Model:
 require('../models/Idea');
 const Idea = mongoose.model('ideas');
@@ -10,7 +12,7 @@ const Idea = mongoose.model('ideas');
 //--------------------------------------------------
 
 // Ideas index page:
-router.get("",(req,res)=>{	
+router.get("",ensureAuthenticated,(req,res)=>{
 	Idea.find({})
 	.sort({date:'desc'})
 	.then(ideas=>{
@@ -22,12 +24,12 @@ router.get("",(req,res)=>{
 });
 
 // add Idea form:
-router.get("/add",(req,res)=>{
+router.get("/add",ensureAuthenticated,(req,res)=>{
 	res.render("ideas/add");
 });
 
 // add Idea form handle :
-router.post("",function(req,res){
+router.post("/",ensureAuthenticated,function(req,res){
 	let errors = [];
 	if (!req.body.title)
 		errors.push({text:'Please add a title'});
@@ -54,7 +56,7 @@ router.post("",function(req,res){
 });
 
 // edit Idea Form:
-router.get("/edit/:id",(req,res)=>{	
+router.get("/edit/:id",ensureAuthenticated,(req,res)=>{	
 	Idea.findOne({
 		_id: req.params.id
 	})
@@ -66,7 +68,7 @@ router.get("/edit/:id",(req,res)=>{
 });
 
 // edit idea Form handle:
-router.put("/:id",(req,res)=>{
+router.put("/:id",ensureAuthenticated,(req,res)=>{
 	Idea.findOne({
 		"_id":req.params.id,
 	})
@@ -85,7 +87,7 @@ router.put("/:id",(req,res)=>{
 });
 
 // delete idea:
-router.delete("/:id",(req,res)=>{
+router.delete("/:id",ensureAuthenticated,(req,res)=>{
 	Idea.remove({_id: req.params.id})
 	.then(()=>{
 		req.flash("success_msg","Video Idea Removed");
