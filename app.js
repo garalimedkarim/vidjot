@@ -86,6 +86,13 @@ app.use(function(req,res,next){
 
 //-----------------Routes-----------------------------
 
+// load routes :
+const ideas = require("./routes/ideas");
+const users = require("./routes/users");
+// Use routes :
+app.use("/ideas",ideas);
+app.use("/users",users);
+
 // Index Route:
 app.get("/",(req,res) => {
  	res.render('index');
@@ -96,13 +103,6 @@ app.get("/",(req,res) => {
 app.get("/about",(req,res)=>{
 	res.render("about",{title:"about1"});
 });
-
-// load routes :
-const ideas = require("./routes/ideas");
-const users = require("./routes/users");
-// Use routes :
-app.use("/ideas",ideas);
-app.use("/users",users);
 
 //--------------------------------------------------
 

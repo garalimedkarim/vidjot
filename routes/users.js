@@ -24,6 +24,12 @@ router.post('/login',
 	failureFlash:true,
   })
 );
+//logout 
+router.get("/logout",(req,res)=>{
+	req.logout();
+	req.flash("success_msg","You are Logged out")
+	res.redirect("/users/login");	
+});
 
 //register form
 router.get("/register",(req,res)=>{

@@ -30,17 +30,21 @@
 		<a class="nav-link disabled" href="#">Disabled</a>
 	  </li>
 	</ul>
-	{{#if user}}
-	{{else}}
 		<ul class="navbar-nav">
+		{{#if user}}
 			<li class="nav-item">
-				<a href="/users/login" class="nav-link"> Connexion </a>		
+				<a href="/users/logout" class="nav-link"> Logout </a>		
+			</li>		
+		{{else}}		
+			<li class="nav-item">
+				<a href="/users/login" class="nav-link"> Login </a>		
 			</li>
 			<li class="nav-item">
 				<a href="/users/register" class="nav-link"> Register </a>		
-			</li>		
+			</li>
+		{{/if}}			
 		</ul>
-	{{/if}}	
+		
 	<form class="form-inline my-2 my-lg-0">
 	  <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
 	  <button class="btn btn-outline-dark my-2 my-sm-0" type="submit">Search</button>
