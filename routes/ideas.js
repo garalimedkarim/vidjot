@@ -13,14 +13,13 @@ const Idea = mongoose.model('ideas');
 
 // Ideas index page:
 router.get("",ensureAuthenticated,(req,res)=>{
-	Idea.find({})
+	Idea.find({'user':req.user.id})
 	.sort({date:'desc'})
 	.then(ideas=>{
 		res.render("ideas/index",{
 			ideas: ideas,
 		});
-	})
-	
+	})	
 });
 
 // add Idea form:
@@ -45,6 +44,7 @@ router.post("/",ensureAuthenticated,function(req,res){
 		const newIdea= {
 			title: req.body.title,
 			details: req.body.details,
+			user: req.user.id,
 		};
 		new Idea(newIdea)
 		.save()
@@ -61,9 +61,14 @@ router.get("/edit/:id",ensureAuthenticated,(req,res)=>{
 		_id: req.params.id
 	})
 	.then(idea=> {
-		res.render("ideas/edit",{
-			idea: idea,
-		});	
+		if (idea.user != req.user.id){
+			req.flash("error_msg","Not Allowed to touch this video");
+			res.redirect("/ideas");
+		}else{
+			res.render("ideas/edit",{
+				idea: idea,
+			});
+		}		
 	});
 });
 
