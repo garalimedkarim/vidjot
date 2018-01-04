@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const passport = require("passport");
 
 const router = express.Router();
-
+console.log("routes/users.js"); 
 //--------------------------------------------------
 
 // Load User Model:
@@ -18,11 +18,12 @@ router.get("/login",(req,res)=>{
 });
 //handle login form:
 router.post('/login',
-  passport.authenticate('local', {
+	//execute passport middleware passport.use( new Strategy ...) : config/passport.js
+	passport.authenticate('local', {
 	successRedirect: '/ideas',
 	failureRedirect: '/users/login',
 	failureFlash:true,
-  })
+	})
 );
 //logout 
 router.get("/logout",(req,res)=>{

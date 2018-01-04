@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-
+console.log("models/Idea.js");
 //create Schema:
 const IdeaSchema = new Schema({
 	title:{

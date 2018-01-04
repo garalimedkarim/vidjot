@@ -10,22 +10,13 @@ const session = require('express-session');
 
 const passport = require('passport');
 
-
 const app=express();
+console.log("start first instruction \n"); //executed once
 
-
-//---------------Mongoose Connect-----------------------
+//----------------Configure middlewares------------------
 
 //Map global promise = get rid of warning
-mongoose.Promise = global.Promise;
-//Connect to mongoose
-mongoose.connect('mongodb://localhost/vidjot-db',{
-	useMongoClient: true
-})
-.then(function(){
-	console.log("MongoDB connected ...");
-})
-.catch(err => console.log(err));
+mongoose.Promise = global.Promise; 
 
 //----------------Middlewares set in Use-----------------
 
@@ -90,7 +81,7 @@ app.use(function(req,res,next){
 const ideas = require("./routes/ideas");
 const users = require("./routes/users");
 // Use routes :
-app.use("/ideas",ideas);
+app.use("/ideas",ideas); // executed once
 app.use("/users",users);
 
 // Index Route:
@@ -104,15 +95,33 @@ app.get("/about",(req,res)=>{
 	res.render("about",{title:"about1"});
 });
 
-//--------------------------------------------------
+
+//---------------Start Server-----------------------
+
+const port = process.env.PORT || 5000;
 
 //call local-strategy:
 require("./config/passport")(passport);
 
-//--------------------------------------------------
+//config global:
+config = require('./config/config');
+config.then(function(resolve){
+	//DB config:
+	const db = require('./config/database');
 
-const port=5000;
+	//Connect to mongoose
+	mongoose.connect(db.mongoURI,{
+		useMongoClient: true
+	})
+	.then(function(){
+		console.log("MongoDB connected ...");
+	})
+	.catch(err => {
+		console.log("Mongo Connexion problem");
+		console.log(err);
+	});
 
-app.listen(port,()=>{
-    console.log(`server started on port ${port}`);
+	app.listen(port,()=>{
+		console.log(`server started on port ${port}`);
+	});	
 });

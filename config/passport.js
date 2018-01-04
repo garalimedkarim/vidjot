@@ -10,12 +10,13 @@ require('../models/User');
 const User = mongoose.model('Users');
 
 //-------------------------------------------------------
-
+// function executed to load the passport config in RAM :
 module.exports=function(passport){
-	
+	console.log("config/passport.js : function executed to load the passport config in RAM");
 	passport.use(
 	new LocalStrategy({usernameField:'email'},function(email, password, done){
-
+		//executed in login action only:
+		console.log("config/passport.js : new LocalStrategy");
 		User.findOne({'email':email},function(err, user) {	
 			if (err)
 				return done(err);

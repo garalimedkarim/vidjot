@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const router = express.Router();
 
 const {ensureAuthenticated} = require("../helpers/auth");
-
+console.log("routes/ideas.js"); 
 // Load Idea Model:
 require('../models/Idea');
 const Idea = mongoose.model('ideas');
